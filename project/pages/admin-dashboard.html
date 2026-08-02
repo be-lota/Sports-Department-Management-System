@@ -28,9 +28,9 @@
 
     <div class="topbar-right">
 
-      <button class="icon-btn" id="notificationBtn">
+      <button class="icon-btn" id="notifBell">
           <i class="fa-regular fa-bell"></i>
-          <span class="badge-dot" id="notificationBadge">5</span>
+          <span class="badge-dot" id="notifCount">5</span>
       </button>
 
         <div class="topbar-profile">
@@ -38,7 +38,7 @@
             <img src="../assets/images/profile.jpg"
             class="topbar-avatar">
 
-            <span class="topbar-username">
+            <span class="topbar-username" id="topbarUsername">
                 Administrator
             </span>
 
@@ -287,31 +287,8 @@ Pending Approvals
                             </tr>
                         </thead>
 
-                        <tbody>
-                            <tr>
-                                <td>Jane Wanjiru</td>
-                                <td>Student</td>
-                                <td><span class="status-pill status-pill--available">Active</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Brian Kiptoo</td>
-                                <td>Sports Officer</td>
-                                <td><span class="status-pill status-pill--available">Active</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Amina Yusuf</td>
-                                <td>Student</td>
-                                <td><span class="status-pill status-pill--pending">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>John Kamau</td>
-                                <td>Administrator</td>
-                                <td><span class="status-pill status-pill--available">Active</span></td>
-                            </tr>
-                        </tbody>
+                        <tbody id="recentUsersBody">
+</tbody>
                     </table>
                 </div>
             </section>
@@ -333,27 +310,8 @@ Pending Approvals
                             </tr>
                         </thead>
 
-                        <tbody>
-
-                            <tr>
-                                <td>Peter Mwangi</td>
-                                <td>Football Pitch</td>
-                                <td><span class="status-pill status-pill--pending">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Mercy Atieno</td>
-                                <td>Basketball Court</td>
-                                <td><span class="status-pill status-pill--available">Approved</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>James Otieno</td>
-                                <td>Tennis Court</td>
-                                <td><span class="status-pill status-pill--booked">Rejected</span></td>
-                            </tr>
-
-                        </tbody>
+                        <tbody id="recentBookingsBody">
+</tbody>
                     </table>
                 </div>
             </section>
@@ -376,27 +334,8 @@ Pending Approvals
                             </tr>
                         </thead>
 
-                        <tbody>
-
-                            <tr>
-                                <td>Basketballs</td>
-                                <td>Kevin Mutua</td>
-                                <td><span class="status-pill status-pill--pending">Pending</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Football Jerseys</td>
-                                <td>Faith Njeri</td>
-                                <td><span class="status-pill status-pill--available">Approved</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Training Cones</td>
-                                <td>Eric Maina</td>
-                                <td><span class="status-pill status-pill--available">Returned</span></td>
-                            </tr>
-
-                        </tbody>
+                        <tbody id="recentLoansBody">
+</tbody>
 
                     </table>
                 </div>
@@ -508,6 +447,7 @@ Pending Approvals
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script src="../assets/js/auth.js"></script>

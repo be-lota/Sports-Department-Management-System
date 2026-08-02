@@ -32,7 +32,7 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
 </button>
 
@@ -40,7 +40,7 @@ Sports Booking System
 
 <img src="../assets/images/profile.jpg" class="topbar-avatar">
 
-<span class="topbar-username">
+<span class="topbar-username" id="topbarUsername">
 Sports Officer
 </span>
 
@@ -160,150 +160,7 @@ placeholder="Search loan requests...">
 
 </thead>
 
-<tbody>
-
-<tr class="loan-row">
-
-<td>Jane Wanjiru</td>
-
-<td>Basketballs</td>
-
-<td>2</td>
-
-<td>22 Jul 2026</td>
-
-<td>
-<span class="status-pill status-pill--pending">
-Pending
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--primary btn--sm approve-loan">
-Approve
-</button>
-
-<button class="btn btn--outline-danger btn--sm reject-loan">
-Reject
-</button>
-
-</td>
-
-</tr>
-
-<tr class="loan-row">
-
-<td>Brian Kiptoo</td>
-
-<td>Footballs</td>
-
-<td>3</td>
-
-<td>24 Jul 2026</td>
-
-<td>
-<span class="status-pill status-pill--pending">
-Pending
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--primary btn--sm approve-loan">
-Approve
-</button>
-
-<button class="btn btn--outline-danger btn--sm reject-loan">
-Reject
-</button>
-
-</td>
-
-</tr>
-
-<tr class="loan-row">
-
-<td>Amina Yusuf</td>
-
-<td>Training Cones</td>
-
-<td>1 Pack</td>
-
-<td>20 Jul 2026</td>
-
-<td>
-<span class="status-pill status-pill--available">
-Approved
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm view-loan">
-View
-</button>
-
-</td>
-
-</tr>
-
-<tr class="loan-row">
-
-<td>David Mwangi</td>
-
-<td>Tennis Rackets</td>
-
-<td>2</td>
-
-<td>21 Jul 2026</td>
-
-<td>
-<span class="status-pill status-pill--booked">
-Rejected
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm view-loan">
-View
-</button>
-
-</td>
-
-</tr>
-
-<tr class="loan-row">
-
-<td>Faith Njeri</td>
-
-<td>Team Jerseys</td>
-
-<td>1 Set</td>
-
-<td>25 Jul 2026</td>
-
-<td>
-<span class="status-pill status-pill--pending">
-Pending
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--primary btn--sm approve-loan">
-Approve
-</button>
-
-<button class="btn btn--outline-danger btn--sm reject-loan">
-Reject
-</button>
-
-</td>
-
-</tr>
-
+<tbody id="loanRequestsBody">
 </tbody>
 
 </table>
@@ -316,6 +173,7 @@ Reject
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

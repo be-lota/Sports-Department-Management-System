@@ -30,14 +30,14 @@
 
     <div class="topbar-right">
 
-        <button class="icon-btn">
+        <button class="icon-btn" id="notifBell">
             <i class="fa-regular fa-bell"></i>
-            <span class="badge-dot">7</span>
+            <span class="badge-dot" id="notifCount">7</span>
         </button>
 
         <div class="topbar-profile">
             <img src="../assets/images/profile.jpg" class="topbar-avatar">
-            <span class="topbar-username">
+            <span class="topbar-username" id="topbarUsername">
                 Sports Officer
             </span>
         </div>
@@ -177,57 +177,7 @@
 
 </thead>
 
-<tbody>
-
-<tr>
-<td>New football pitch booking request submitted.</td>
-<td>Booking</td>
-<td>5 mins ago</td>
-<td><span class="status-pill status-pill--pending">New</span></td>
-</tr>
-
-<tr>
-<td>Student requested 2 basketballs.</td>
-<td>Equipment</td>
-<td>18 mins ago</td>
-<td><span class="status-pill status-pill--pending">Pending</span></td>
-</tr>
-
-<tr>
-<td>Complaint received about damaged volleyball net.</td>
-<td>Complaint</td>
-<td>40 mins ago</td>
-<td><span class="status-pill status-pill--booked">Urgent</span></td>
-</tr>
-
-<tr>
-<td>Gym booking approved successfully.</td>
-<td>Booking</td>
-<td>1 hour ago</td>
-<td><span class="status-pill status-pill--available">Completed</span></td>
-</tr>
-
-<tr>
-<td>Equipment stock for Tennis Rackets is running low.</td>
-<td>Inventory</td>
-<td>2 hours ago</td>
-<td><span class="status-pill status-pill--pending">Warning</span></td>
-</tr>
-
-<tr>
-<td>Maintenance scheduled for the Main Football Pitch tomorrow.</td>
-<td>Maintenance</td>
-<td>Yesterday</td>
-<td><span class="status-pill status-pill--available">Scheduled</span></td>
-</tr>
-
-<tr>
-<td>Monthly sports report is ready for download.</td>
-<td>Reports</td>
-<td>Yesterday</td>
-<td><span class="status-pill status-pill--available">Ready</span></td>
-</tr>
-
+<tbody id="officerNotificationsBody">
 </tbody>
 
 </table>
@@ -243,15 +193,15 @@
 
 <div class="report-actions">
 
-<button class="btn btn--primary">
+<a class="btn btn--primary" href="../pages/booking-requests.html">
 <i class="fa-solid fa-calendar-check"></i>
 View Booking Requests
-</button>
+</a>
 
-<button class="btn btn--outline">
+<a class="btn btn--outline" href="../pages/loan-requests.html">
 <i class="fa-solid fa-basketball"></i>
 View Loan Requests
-</button>
+</a>
 
 <button class="btn btn--outline" id="markAllRead">
 <i class="fa-solid fa-circle-check"></i>
@@ -266,6 +216,7 @@ Mark All as Read
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

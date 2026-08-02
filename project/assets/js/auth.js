@@ -1,295 +1,174 @@
-//REGISTRATION
+// Real login/register/logout/route-guard, backed by apiClient/appState (api.js).
 
-const registerForm = document.getElementById("registerForm");
+function showAuthError(message) {
+  const el = document.getElementById('authError');
+  if (!el) {
+    alert(message);
+    return;
+  }
+  el.textContent = message;
+  el.classList.add('visible');
+}
+
+function clearAuthError() {
+  const el = document.getElementById('authError');
+  if (el) {
+    el.textContent = '';
+    el.classList.remove('visible');
+  }
+}
+
+function dashboardForRole(role) {
+  if (role === 'officer') return 'officer-dashboard.html';
+  if (role === 'admin') return 'admin-dashboard.html';
+  return 'Studentdashboard.html';
+}
+
+// --- Registration ---
+
+const registerForm = document.getElementById('registerForm');
 
 if (registerForm) {
+  registerForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    clearAuthError();
 
-    registerForm.addEventListener("submit", function (e) {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
-        e.preventDefault();
-
-        const firstName = document.getElementById("firstName").value.trim();
-        const lastName = document.getElementById("lastName").value.trim();
-        const admissionNumber = document.getElementById("admissionNumber").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const school = document.getElementById("school").value;
-        const course = document.getElementById("course").value.trim();
-        const year = document.getElementById("year").value;
-        const password = document.getElementById("password").value;
-        const confirmPassword = document.getElementById("confirmPassword").value;
-
-        // Password validation
-        if (password !== confirmPassword) {
-
-            alert("Passwords do not match.");
-            return;
-
-        }
-
-        // Create student object
-        const student = {
-
-            firstName,
-            lastName,
-            admissionNumber,
-            email,
-            phone,
-            school,
-            course,
-            year,
-            password,
-            role: "student"
-
-        };
-
-        // Get existing students
-        let students = JSON.parse(localStorage.getItem("students")) || [];
-
-        // Check if email already exists
-        const exists = students.find(user => user.email === email);
-
-        if (exists) {
-
-            alert("An account with this email already exists.");
-            return;
-
-        }
-
-        // Save student
-        students.push(student);
-
-        localStorage.setItem("students", JSON.stringify(students));
-
-        alert("Registration successful! Please login.");
-
-        registerForm.reset();
-
-        window.location.href = "login.html";
-
-    });
-
-}
-// Part 2 - Login
-
-const loginForm = document.getElementById("loginForm");
-
-if (loginForm) {
-
-    loginForm.addEventListener("submit", function (e) {
-
-        e.preventDefault();
-
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const role = document.getElementById("role").value;
-
-        if (email === "" || password === "") {
-            alert("Please enter your email and password.");
-            return;
-        }
-
-        if (role === "") {
-            alert("Please select your role.");
-            return;
-        }
-
-
-        if (role === "student") {
-
-    let students =
-    JSON.parse(localStorage.getItem("students")) || [];
-
-    const student = students.find(user =>
-        user.email === email &&
-        user.password === password
-    );
-    if(!student){
-
-        alert("Invalid email or password.");
-        return;
+    if (password !== confirmPassword) {
+      showAuthError('Passwords do not match.');
+      return;
     }
 
-    localStorage.setItem(
-        "currentStudent",
-        JSON.stringify(student)
-    );
-    localStorage.setItem(
-        "userRole",
-        "student"
-    );
-    alert("Student Login Successful");
-    window.location.href="studentdashboard.html";
-
+    try {
+      await apiClient.register({
+        name: `${firstName} ${lastName}`.trim(),
+        email,
+        password,
+        role: 'student',
+      });
+      registerForm.reset();
+      window.location.href = 'login.html';
+    } catch (err) {
+      showAuthError(err.message);
+    }
+  });
 }
 
-        else if (role === "officer") {
-            localStorage.setItem("userRole", role);
+// --- Login ---
 
-            alert("Sports Officer Login Successful");
-            window.location.href = "officer-dashboard.html";
+const loginForm = document.getElementById('loginForm');
 
-        }
+if (loginForm) {
+  const emailInput = document.getElementById('email');
+  const rememberMeInput = document.getElementById('rememberMe');
 
-        else if (role === "admin") {
-            localStorage.setItem("userRole", role);
+  const savedEmail = localStorage.getItem('rememberedEmail');
+  if (savedEmail && emailInput) {
+    emailInput.value = savedEmail;
+    if (rememberMeInput) rememberMeInput.checked = true;
+  }
 
-            alert("Administrator Login Successful");
-            window.location.href = "admin-dashboard.html";
+  loginForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    clearAuthError();
 
-        }
+    const email = emailInput.value.trim();
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
 
-    });
+    if (!email || !password) {
+      showAuthError('Please enter your email and password.');
+      return;
+    }
+    if (!role) {
+      showAuthError('Please select your role.');
+      return;
+    }
 
+    try {
+      const { token, user } = await apiClient.login(email, password, role);
+      appState.setSession(token, user);
+
+      if (rememberMeInput && rememberMeInput.checked) {
+        localStorage.setItem('rememberedEmail', email);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
+
+      window.location.href = dashboardForRole(user.role);
+    } catch (err) {
+      showAuthError(err.message);
+    }
+  });
 }
-// HIDE PASSWORD
 
-const passwordInput = document.getElementById("password");
-const togglePassword = document.getElementById("togglePassword");
+// --- Password show/hide ---
+
+const passwordInput = document.getElementById('password');
+const togglePassword = document.getElementById('togglePassword');
 
 if (passwordInput && togglePassword) {
-
-    togglePassword.addEventListener("click", function () {
-
-        if (passwordInput.type === "password") {
-
-            passwordInput.type = "text";
-            togglePassword.classList.remove("fa-eye");
-            togglePassword.classList.add("fa-eye-slash");
-
-        } else {
-
-            passwordInput.type = "password";
-            togglePassword.classList.remove("fa-eye-slash");
-            togglePassword.classList.add("fa-eye");
-
-        }
-
-    });
-
-}
-
-
-// remeber me
-
-const rememberMe = document.getElementById("rememberMe");
-
-if (loginForm) {
-
-    const savedEmail = localStorage.getItem("rememberedEmail");
-
-    if (savedEmail) {
-
-        email.value = savedEmail;
-
-        if (rememberMe) {
-            rememberMe.checked = true;
-        }
-
+  togglePassword.addEventListener('click', function () {
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      togglePassword.classList.remove('fa-eye');
+      togglePassword.classList.add('fa-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      togglePassword.classList.remove('fa-eye-slash');
+      togglePassword.classList.add('fa-eye');
     }
-
-    loginForm.addEventListener("submit", function () {
-
-        if (rememberMe && rememberMe.checked) {
-
-            localStorage.setItem(
-                "rememberedEmail",
-                email.value
-            );
-
-        } else {
-
-            localStorage.removeItem("rememberedEmail");
-
-        }
-
-        // Save logged in role
-        localStorage.setItem("userRole", role.value);
-
-    });
-
+  });
 }
 
+// --- Logout ---
 
-const logoutButtons = document.querySelectorAll(".sidebar-link--logout");
-
-logoutButtons.forEach(function (button) {
-
-    button.addEventListener("click", function () {
-
-        localStorage.removeItem("userRole");
-
-        alert("You have been logged out.");
-
-    });
-
+document.querySelectorAll('.sidebar-link--logout').forEach(function (button) {
+  button.addEventListener('click', async function (e) {
+    e.preventDefault();
+    await apiClient.logout();
+    appState.clearSession();
+    window.location.href = 'login.html';
+  });
 });
 
+// --- Route guard ---
 
-const currentPage = window.location.pathname.split("/").pop();
+const PUBLIC_PAGES = ['index.html', 'login.html', 'register.html', ''];
 
-const userRole = localStorage.getItem("userRole");
-
-const studentPages = [
-    "studentdashboard.html",
-    "booking.html",
-    "equipment.html",
-    "my-bookings.html",
-    "my-loans.html",
-    "student-notifications.html",
-    "profile.html"
-];
-
-const officerPages = [
-    "officer-dashboard.html",
-    "manage-facilities.html",
-    "equipment-inventory.html",
-    "booking-requests.html",
-    "loan-requests.html",
-    "officer-notifications.html",
-    "complaints.html",
-    "reports.html"
-];
-
-const adminPages = [
-    "admin-dashboard.html",
-    "manage-users.html",
-    "assign-roles.html",
-    "admin-notifications.html",
-    "analytics.html",
-    "admin-reports.html",
-    "settings.html"
-];
-
-
-//Student Protection
-
-if (studentPages.includes(currentPage) && userRole !== "student") {
-
-    alert("Access denied.");
-
-    window.location.href = "login.html";
-
+function requiredRoleForPage(page) {
+  if (page === 'studentdashboard.html' || ['facilities.html', 'equipment.html'].includes(page)) return 'student';
+  if (
+    page.startsWith('officer-') ||
+    ['booking-requests.html', 'loan-requests.html', 'equipment-inventory.html', 'manage-facilities.html', 'complaints.html'].includes(page)
+  ) {
+    return 'officer';
+  }
+  if (
+    page.startsWith('admin-') ||
+    ['analytics.html', 'assign-roles.html', 'manage-users.html', 'settings.html'].includes(page)
+  ) {
+    return 'admin';
+  }
+  return null; // shared pages (notifications.html, profile.html, reports.html) — any logged-in role
 }
 
+(function routeGuard() {
+  const page = window.location.pathname.split('/').pop().toLowerCase();
+  if (PUBLIC_PAGES.includes(page)) return;
 
-//Sports Officer Protection
+  if (!appState.isLoggedIn()) {
+    window.location.href = 'login.html';
+    return;
+  }
 
-if (officerPages.includes(currentPage) && userRole !== "officer") {
-
-    alert("Access denied.");
-
-    window.location.href = "login.html";
-
-}
-
-
-//Administrator Protection
-
-if (adminPages.includes(currentPage) && userRole !== "admin") {
-
-    alert("Access denied.");
-
-    window.location.href = "login.html";
-
-}
+  const requiredRole = requiredRoleForPage(page);
+  if (requiredRole && appState.user.role !== requiredRole) {
+    window.location.href = dashboardForRole(appState.user.role);
+  }
+})();

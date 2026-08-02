@@ -29,14 +29,14 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
-<span class="badge-dot">4</span>
+<span class="badge-dot" id="notifCount">4</span>
 </button>
 
 <div class="topbar-profile">
 <img src="../assets/images/profile.jpg" class="topbar-avatar">
-<span class="topbar-username">
+<span class="topbar-username" id="topbarUsername">
 Administrator
 </span>
 </div>
@@ -156,12 +156,7 @@ Administrator
 
 <label>
 Select User
-<select id="selectedUser">
-<option>Jane Wanjiru</option>
-<option>Brian Kiptoo</option>
-<option>Mr. Otieno</option>
-<option>Faith Achieng</option>
-</select>
+<select id="selectedUser"></select>
 </label>
 
 <label>
@@ -169,7 +164,6 @@ Current Role
 <input
 type="text"
 id="currentRole"
-value="Student"
 readonly>
 </label>
 
@@ -180,21 +174,15 @@ readonly>
 <label>
 Assign New Role
 <select id="newRole">
-<option>Student</option>
-<option>Sports Officer</option>
-<option>Administrator</option>
-</select>
-</label>
-
-<label>
-Status
-<select id="userStatus">
-<option>Active</option>
-<option>Suspended</option>
+<option value="student">Student</option>
+<option value="officer">Sports Officer</option>
+<option value="admin">Administrator</option>
 </select>
 </label>
 
 </div>
+
+<p id="roleAssignError" class="form-error"></p>
 
 <div class="form-actions">
 
@@ -242,40 +230,7 @@ Reset
 
 </thead>
 
-<tbody>
-
-<tr class="role-row">
-<td>Jane Wanjiru</td>
-<td>jane@usiu.ac.ke</td>
-<td>Student</td>
-<td><span class="status-pill status-pill--available">Active</span></td>
-<td>18 Jul 2026</td>
-</tr>
-
-<tr class="role-row">
-<td>Brian Kiptoo</td>
-<td>brian@usiu.ac.ke</td>
-<td>Student</td>
-<td><span class="status-pill status-pill--pending">Suspended</span></td>
-<td>16 Jul 2026</td>
-</tr>
-
-<tr class="role-row">
-<td>Mr. Otieno</td>
-<td>otieno@usiu.ac.ke</td>
-<td>Sports Officer</td>
-<td><span class="status-pill status-pill--available">Active</span></td>
-<td>12 Jul 2026</td>
-</tr>
-
-<tr class="role-row">
-<td>Admin User</td>
-<td>admin@usiu.ac.ke</td>
-<td>Administrator</td>
-<td><span class="status-pill status-pill--available">Active</span></td>
-<td>10 Jul 2026</td>
-</tr>
-
+<tbody id="roleAssignmentsBody">
 </tbody>
 
 </table>
@@ -322,6 +277,7 @@ Role assignment history saved
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script src="../assets/js/auth.js"></script>

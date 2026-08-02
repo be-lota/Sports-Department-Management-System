@@ -30,14 +30,14 @@
 
     <div class="topbar-right">
 
-        <button class="icon-btn">
+        <button class="icon-btn" id="notifBell">
             <i class="fa-regular fa-bell"></i>
-            <span class="badge-dot">3</span>
+            <span class="badge-dot" id="notifCount">3</span>
         </button>
 
         <div class="topbar-profile">
             <img src="../assets/images/profile.jpg" class="topbar-avatar">
-            <span class="topbar-username">
+            <span class="topbar-username" id="topbarUsername">
                 Sports Officer
             </span>
         </div>
@@ -120,7 +120,7 @@
 </div>
 
 <div>
-<span class="stat-number">148</span>
+<span class="stat-number" id="reportTotalBookings">0</span>
 <span class="stat-label">Facility Bookings</span>
 </div>
 </div>
@@ -132,7 +132,7 @@
 </div>
 
 <div>
-<span class="stat-number">96</span>
+<span class="stat-number" id="reportTotalLoans">0</span>
 <span class="stat-label">Equipment Loans</span>
 </div>
 </div>
@@ -144,7 +144,7 @@
 </div>
 
 <div>
-<span class="stat-number">8</span>
+<span class="stat-number" id="reportTotalFacilities">0</span>
 <span class="stat-label">Facilities</span>
 </div>
 </div>
@@ -156,178 +156,9 @@
 </div>
 
 <div>
-<span class="stat-number">11</span>
+<span class="stat-number" id="reportTotalComplaints">0</span>
 <span class="stat-label">Complaints</span>
 </div>
-</div>
-
-</section>
-
-
-
-<section class="table-card">
-
-<div class="table-card-head">
-<h2>Monthly Activity Report</h2>
-</div>
-
-<div class="table-scroll">
-
-<table class="data-table">
-
-<thead>
-
-<tr>
-
-<th>Month</th>
-<th>Bookings</th>
-<th>Equipment Loans</th>
-<th>Complaints</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>January</td>
-<td>95</td>
-<td>60</td>
-<td>6</td>
-</tr>
-
-<tr>
-<td>February</td>
-<td>104</td>
-<td>68</td>
-<td>4</td>
-</tr>
-
-<tr>
-<td>March</td>
-<td>126</td>
-<td>72</td>
-<td>8</td>
-</tr>
-
-<tr>
-<td>April</td>
-<td>148</td>
-<td>96</td>
-<td>11</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</section>
-
-
-
-<section class="table-card">
-
-<div class="table-card-head">
-<h2>Most Booked Facilities</h2>
-</div>
-
-<div class="table-scroll">
-
-<table class="data-table">
-
-<thead>
-
-<tr>
-
-<th>Facility</th>
-<th>Total Bookings</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>Football Pitch</td>
-<td>48</td>
-</tr>
-
-<tr>
-<td>Basketball Court</td>
-<td>41</td>
-</tr>
-
-<tr>
-<td>Gymnasium</td>
-<td>34</td>
-</tr>
-
-<tr>
-<td>Tennis Court</td>
-<td>25</td>
-</tr>
-
-</tbody>
-
-</table>
-
-</div>
-
-</section>
-
-
-
-<section class="table-card">
-
-<div class="table-card-head">
-<h2>Most Borrowed Equipment</h2>
-</div>
-
-<div class="table-scroll">
-
-<table class="data-table">
-
-<thead>
-
-<tr>
-
-<th>Equipment</th>
-<th>Loans</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-<tr>
-<td>Footballs</td>
-<td>40</td>
-</tr>
-
-<tr>
-<td>Basketballs</td>
-<td>34</td>
-</tr>
-
-<tr>
-<td>Training Cones</td>
-<td>29</td>
-</tr>
-
-<tr>
-<td>Team Jerseys</td>
-<td>20</td>
-</tr>
-
-</tbody>
-
-</table>
-
 </div>
 
 </section>
@@ -342,21 +173,37 @@
 
 <div class="report-actions">
 
-<button class="btn btn--primary">
+<select id="reportTypeSelect">
+<option value="bookings">Bookings</option>
+<option value="equipment">Equipment Loans</option>
+<option value="users">Users</option>
+</select>
+
+<input type="date" id="reportFrom">
+<input type="date" id="reportTo">
+
+<button class="btn btn--primary" id="generateReportBtn">
 <i class="fa-solid fa-file-circle-plus"></i>
 Generate Report
 </button>
 
-<button class="btn btn--outline">
+<button class="btn btn--outline" id="exportPdfBtn">
 <i class="fa-solid fa-file-pdf"></i>
 Export PDF
 </button>
 
-<button class="btn btn--outline">
+<button class="btn btn--outline" id="exportExcelBtn">
 <i class="fa-solid fa-file-excel"></i>
 Export Excel
 </button>
 
+</div>
+
+<div class="table-scroll">
+<table class="data-table">
+<thead id="reportResultsHead"></thead>
+<tbody id="reportResultsBody"></tbody>
+</table>
 </div>
 
 </section>
@@ -365,6 +212,7 @@ Export Excel
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

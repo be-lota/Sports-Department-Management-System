@@ -35,7 +35,7 @@
 
   <aside class="sidebar" id="sidebar">
     <nav class="sidebar-nav">
-      <a href="../pages/student-dashboard.html" class="sidebar-link"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a>
+      <a href="../pages/Studentdashboard.html" class="sidebar-link"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a>
       <a href="../pages/facilities.html" class="sidebar-link"><i class="fa-solid fa-building-columns"></i><span>Book Facility</span></a>
       <a href="../pages/equipment.html" class="sidebar-link"><i class="fa-solid fa-basketball"></i><span>Equipment</span></a>
       <a href="../pages/notifications.html" class="sidebar-link active"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
@@ -60,117 +60,13 @@
       <div class="filter-chips" id="notificationFilters">
         <button class="chip chip--active" data-filter="all">All</button>
         <button class="chip" data-filter="booking">Bookings</button>
-        <button class="chip" data-filter="equipment">Equipment</button>
+        <button class="chip" data-filter="loan">Equipment</button>
         <button class="chip" data-filter="system">System</button>
       </div>
     </section>
 
     <section class="notifications-container">
-      <div id="notificationsListContainer">
-        
-        <div class="notification-item notification-item--unread" data-type="booking">
-          <div class="notification-icon notification-icon--booking">
-            <i class="fa-solid fa-calendar-check"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Booking Confirmed</h3>
-              <span class="notification-time">2 hours ago</span>
-            </div>
-            <p class="notification-message">Your booking for Indoor Basketball Court on 18 Jul 2026 at 3:00 PM has been confirmed.</p>
-            <div class="notification-actions">
-              <button class="btn btn--outline btn--sm" onclick="handleViewBooking(this)">View Booking</button>
-              <button class="btn btn--ghost btn--sm" onclick="handleMarkAsRead(this)">Dismiss</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--unread" data-type="equipment">
-          <div class="notification-icon notification-icon--equipment">
-            <i class="fa-solid fa-basketball"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Equipment Request Approved</h3>
-              <span class="notification-time">5 hours ago</span>
-            </div>
-            <p class="notification-message">Your request for 2 Basketballs has been approved. Please collect from the Sports Complex by 22 Jul 2026.</p>
-            <div class="notification-actions">
-              <button class="btn btn--outline btn--sm" onclick="handleViewEquipment(this)">View Request</button>
-              <button class="btn btn--ghost btn--sm" onclick="handleMarkAsRead(this)">Dismiss</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--read" data-type="booking">
-          <div class="notification-icon notification-icon--booking">
-            <i class="fa-solid fa-calendar-xmark"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Booking Cancelled</h3>
-              <span class="notification-time">1 day ago</span>
-            </div>
-            <p class="notification-message">Your booking for Tennis Court on 15 Jul 2026 has been automatically cancelled due to maintenance.</p>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--unread" data-type="system">
-          <div class="notification-icon notification-icon--system">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>System Maintenance Notice</h3>
-              <span class="notification-time">1 day ago</span>
-            </div>
-            <p class="notification-message">The Main Gymnasium will be closed on 21 Jul 2026 for equipment servicing. Please plan your bookings accordingly.</p>
-            <div class="notification-actions">
-              <button class="btn btn--ghost btn--sm" onclick="handleMarkAsRead(this)">Acknowledge</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--read" data-type="equipment">
-          <div class="notification-icon notification-icon--equipment">
-            <i class="fa-solid fa-check-circle"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Equipment Returned Successfully</h3>
-              <span class="notification-time">2 days ago</span>
-            </div>
-            <p class="notification-message">Your return of Team Jerseys (1 set) has been recorded. Thank you!</p>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--read" data-type="booking">
-          <div class="notification-icon notification-icon--booking">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Booking Completed</h3>
-              <span class="notification-time">3 days ago</span>
-            </div>
-            <p class="notification-message">Your booking for Main Gymnasium on 12 Jul 2026 (7:00 AM - 8:00 AM) has been marked as completed.</p>
-          </div>
-        </div>
-
-        <div class="notification-item notification-item--read" data-type="system">
-          <div class="notification-icon notification-icon--system">
-            <i class="fa-solid fa-info-circle"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>Announcement: Inter-Hostel Tournament</h3>
-              <span class="notification-time">1 week ago</span>
-            </div>
-            <p class="notification-message">Registrations for the inter-hostel football tournament are now open. Closing date: 28 Jul 2026. Interested? Sign up today!</p>
-          </div>
-        </div>
-
-      </div>
+      <div id="notificationsListContainer"></div>
 
       <div class="empty-state" id="emptyState" style="display: none;">
         <div class="empty-state-icon">
@@ -195,56 +91,34 @@
 <style>
 </style>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
+<script src="../assets/js/auth.js"></script>
 <script>
 //  SPECIFIC JAVASCRIPT
 
 function handleMarkAsRead(btn) {
   const notificationItem = btn.closest('.notification-item');
-  if (notificationItem) {
-    notificationItem.classList.remove('notification-item--unread');
-    notificationItem.classList.add('notification-item--read');
-    btn.style.display = 'none';
-    
-    // Call API to mark as read if notification has an ID
-    const notificationId = notificationItem.dataset.id;
-    if (notificationId) {
-      apiClient.markNotificationAsRead(notificationId).catch(err => {
-        console.error('Failed to mark notification as read:', err);
-      });
-    }
+  if (!notificationItem) return;
+
+  notificationItem.classList.remove('notification-item--unread');
+  notificationItem.classList.add('notification-item--read');
+  btn.style.display = 'none';
+
+  const notificationId = notificationItem.dataset.id;
+  if (notificationId) {
+    apiClient.markNotificationAsRead(notificationId).catch(err => {
+      console.error('Failed to mark notification as read:', err);
+    });
   }
 }
 
-/** Handle viewing a booking notification
- */
 function handleViewBooking(btn) {
-  const notificationItem = btn.closest('.notification-item');
-  const message = notificationItem.querySelector('.notification-message').textContent;
-  
-  // Extract booking ID from notification if available, or redirect to bookings
-  const bookingId = notificationItem.dataset.bookingId;
-  if (bookingId) {
-    window.location.href = `facilities.html#booking-${bookingId}`;
-  } else {
-    window.location.href = 'facilities.html';
-  }
-  
-  handleMarkAsRead(btn);
+  window.location.href = 'facilities.html';
 }
 
-/**Handle viewing an equipment notification
- */
 function handleViewEquipment(btn) {
-  const notificationItem = btn.closest('.notification-item');
-  const loanId = notificationItem.dataset.loanId;
-  if (loanId) {
-    window.location.href = `equipment.html#loan-${loanId}`;
-  } else {
-    window.location.href = 'equipment.html';
-  }
-  
-  handleMarkAsRead(btn);
+  window.location.href = 'equipment.html';
 }
 
 function setupNotificationFilters() {
@@ -285,81 +159,71 @@ function filterNotifications(filter) {
 
 async function markAllAsRead() {
   try {
-    const response = await apiClient.markAllNotificationsAsRead();
-    if (response.success) {
-      
-      document.querySelectorAll('.notification-item--unread').forEach(item => {
-        item.classList.remove('notification-item--unread');
-        item.classList.add('notification-item--read');
-        const dismissBtn = item.querySelector('[onclick*="handleMarkAsRead"]');
-        if (dismissBtn) dismissBtn.style.display = 'none';
-      });
-      
-      
-      const badge = document.getElementById('notifCount');
-      if (badge) badge.textContent = '0';
-      
-      const toast = document.createElement('div');
-      toast.className = 'toast toast--success';
-      toast.innerHTML = '<i class="fa-solid fa-circle-check"></i><span>All notifications marked as read</span>';
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
-    }
+    await apiClient.markAllNotificationsAsRead();
+
+    document.querySelectorAll('.notification-item--unread').forEach(item => {
+      item.classList.remove('notification-item--unread');
+      item.classList.add('notification-item--read');
+      const dismissBtn = item.querySelector('[onclick*="handleMarkAsRead"]');
+      if (dismissBtn) dismissBtn.style.display = 'none';
+    });
+
+    const badge = document.getElementById('notifCount');
+    if (badge) badge.textContent = '0';
   } catch (error) {
     console.error('Failed to mark all notifications as read:', error);
   }
 }
 
-/** Load notifications from API (optional - for real data)
- */
 async function loadNotifications() {
   try {
-    const response = await apiClient.getNotifications();
-    if (response.success) {
-      const container = document.getElementById('notificationsListContainer');
-      const emptyState = document.getElementById('emptyState');
-      
-      if (response.data.length === 0) {
-        container.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-      }
-      
-      const html = response.data.map(notif => `
-        <div class="notification-item notification-item--${notif.isRead ? 'read' : 'unread'}" data-type="${notif.type}" data-id="${notif.id}">
-          <div class="notification-icon notification-icon--${notif.type}">
-            <i class="fa-solid fa-${getNotificationIcon(notif.type)}"></i>
-          </div>
-          <div class="notification-content">
-            <div class="notification-header">
-              <h3>${notif.title}</h3>
-              <span class="notification-time">${formatTime(notif.createdAt)}</span>
-            </div>
-            <p class="notification-message">${notif.message}</p>
-            ${!notif.isRead ? `<div class="notification-actions">
-              <button class="btn btn--ghost btn--sm" onclick="handleMarkAsRead(this)">Dismiss</button>
-            </div>` : ''}
-          </div>
-        </div>
-      `).join('');
-      
-      container.innerHTML = html;
-      emptyState.style.display = 'none';
-      
-      
-      const unreadCount = response.data.filter(n => !n.isRead).length;
-      document.getElementById('notifCount').textContent = unreadCount || '';
+    const notifications = await apiClient.getNotifications();
+    const container = document.getElementById('notificationsListContainer');
+    const emptyState = document.getElementById('emptyState');
+
+    if (notifications.length === 0) {
+      container.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
     }
+
+    const html = notifications.map(notif => `
+      <div class="notification-item notification-item--${notif.is_read ? 'read' : 'unread'}" data-type="${notif.type}" data-id="${notif.id}">
+        <div class="notification-icon notification-icon--${notif.type}">
+          <i class="fa-solid fa-${getNotificationIcon(notif.type)}"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-header">
+            <h3>${notificationTypeLabel(notif.type)}</h3>
+            <span class="notification-time">${formatTime(notif.created_at)}</span>
+          </div>
+          <p class="notification-message">${notif.message}</p>
+          ${!notif.is_read ? `<div class="notification-actions">
+            <button class="btn btn--ghost btn--sm" onclick="handleMarkAsRead(this)">Dismiss</button>
+          </div>` : ''}
+        </div>
+      </div>
+    `).join('');
+
+    container.innerHTML = html;
+    emptyState.style.display = 'none';
+
+    const unreadCount = notifications.filter(n => !n.is_read).length;
+    document.getElementById('notifCount').textContent = unreadCount || '';
   } catch (error) {
     console.error('Failed to load notifications:', error);
   }
 }
 
+function notificationTypeLabel(type) {
+  const labels = { booking: 'Booking', loan: 'Equipment', system: 'System' };
+  return labels[type] || 'Notification';
+}
 
 function getNotificationIcon(type) {
   const iconMap = {
     booking: 'calendar-check',
-    equipment: 'basketball',
+    loan: 'basketball',
     system: 'triangle-exclamation',
   };
   return iconMap[type] || 'bell';

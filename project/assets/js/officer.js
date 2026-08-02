@@ -1,527 +1,495 @@
-document.addEventListener("DOMContentLoaded", () => {
+// Officer pages wiring, backed by apiClient/appState (api.js).
 
-    initializeSidebar();
-    initializeNotifications();
-    initializeModals();
-    initializeSearch();
-    initializeForms();
+document.addEventListener('DOMContentLoaded', () => {
+  initializeSidebar();
+  initializeNotificationBell();
+  displayUsername();
+  initializeModalOpeners();
+  initializeTableSearch();
 
+  loadOfficerDashboard();
+  loadBookingRequests();
+  loadLoanRequests();
+  loadEquipmentInventory();
+  wireEquipmentForm();
+  loadFacilities();
+  wireFacilityForm();
+  loadComplaints();
+  loadOfficerNotifications();
+  wireMarkAllRead();
+  loadReportStats();
+  wireReportControls();
 });
-
-const notificationBtn = document.querySelector(".icon-btn");
-
-if (notificationBtn) {
-
-    notificationBtn.addEventListener("click", function () {
-
-        window.location.href = "officer-notifications.html";
-
-    });
-
-}
-
 
 function initializeSidebar() {
-
-    const sidebar = document.getElementById("sidebar");
-    const toggle = document.getElementById("sidebarToggle");
-
-    if (!sidebar || !toggle) return;
-
-    toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("collapsed");
-    });
-
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('sidebarToggle');
+  if (!sidebar || !toggle) return;
+  toggle.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
 }
 
-// Notification Bell
-
-function initializeNotifications() {
-
-    const bell = document.getElementById("notifBell");
-
-    if (!bell) return;
-
-    bell.addEventListener("click", () => {
-        alert("No new notifications.");
-    });
-
+function initializeNotificationBell() {
+  const bell = document.getElementById('notifBell');
+  if (!bell) return;
+  bell.addEventListener('click', () => {
+    window.location.href = 'officer-notifications.html';
+  });
 }
 
-function initializeModals() {
-
-    // Open Modal
-    document.querySelectorAll("[data-open-modal]").forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const modalId = button.dataset.openModal;
-            const modal = document.getElementById(modalId);
-
-            if (modal) {
-                modal.classList.add("active");
-            }
-
-        });
-
-    });
-
-    // Close Modal
-    document.querySelectorAll("[data-close-modal]").forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const modalId = button.dataset.closeModal;
-            const modal = document.getElementById(modalId);
-
-            if (modal) {
-                modal.classList.remove("active");
-            }
-
-        });
-
-    });
-
+function displayUsername() {
+  const name = (appState.user && appState.user.name) || 'Sports Officer';
+  const el = document.getElementById('topbarUsername');
+  if (el) el.textContent = name;
 }
 
-function initializeSearch() {
-
-    const searches = document.querySelectorAll("input[type='search']");
-
-    searches.forEach(search => {
-
-        search.addEventListener("keyup", () => {
-
-            const filter = search.value.toLowerCase();
-
-            const table =
-                search.closest(".table-card")?.querySelector("tbody");
-
-            if (!table) return;
-
-            table.querySelectorAll("tr").forEach(row => {
-
-                const text = row.textContent.toLowerCase();
-
-                row.style.display =
-                    text.includes(filter) ? "" : "none";
-
-            });
-
-        });
-
+function initializeModalOpeners() {
+  document.querySelectorAll('[data-open-modal]').forEach(button => {
+    button.addEventListener('click', () => {
+      const modal = document.getElementById(button.dataset.openModal);
+      if (modal) modal.classList.add('active');
     });
-
+  });
 }
 
-
-function initializeForms() {
-
-    document.querySelectorAll("form").forEach(form => {
-
-        form.addEventListener("submit", function (e) {
-
-            e.preventDefault();
-
-            alert("Saved successfully.");
-
-        });
-
+function initializeTableSearch() {
+  document.querySelectorAll('.search-box input, input[type="search"]').forEach(search => {
+    search.addEventListener('input', () => {
+      const filter = search.value.toLowerCase();
+      const table = search.closest('.toolbar-card')?.nextElementSibling?.querySelector('tbody')
+        || document.querySelector('.table-card tbody');
+      if (!table) return;
+      table.querySelectorAll('tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(filter) ? '' : 'none';
+      });
     });
-
+  });
 }
-// Officer Management Functions
 
-document.addEventListener("DOMContentLoaded", () => {
+function statusLabel(status) {
+  return status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
+}
 
-    initializeBookingActions();
-    initializeLoanActions();
-    initializeComplaintActions();
-    initializeDeleteButtons();
-    updateOfficerStatistics();
+function statusPillClass(status) {
+  if (['confirmed', 'approved', 'returned', 'resolved'].includes(status)) return 'status-pill--available';
+  if (['pending', 'checked_out', 'open', 'in_progress'].includes(status)) return 'status-pill--pending';
+  return 'status-pill--booked';
+}
 
-});
+// --- Dashboard ---
 
-//Booking Requests
+async function loadOfficerDashboard() {
+  const totalBookingsEl = document.getElementById('totalBookings');
+  if (!totalBookingsEl) return;
 
-function initializeBookingActions() {
+  try {
+    const [bookings, loans, complaints, equipment, facilities] = await Promise.all([
+      apiClient.getBookings(),
+      apiClient.getLoans(),
+      apiClient.getComplaints(),
+      apiClient.getEquipment(),
+      apiClient.getFacilities(),
+    ]);
 
-    document.querySelectorAll(".approve-booking").forEach(button => {
+    const today = new Date().toISOString().slice(0, 10);
 
-        button.addEventListener("click", function () {
+    set('totalBookings', bookings.length);
+    set('approvedBookings', bookings.filter(b => b.status === 'confirmed').length);
+    set('pendingBookings', bookings.filter(b => b.status === 'pending').length);
+    set('pendingLoans', loans.filter(l => l.status === 'pending').length);
+    set('todayBookings', bookings.filter(b => b.date === today).length);
+    set('openComplaints', complaints.filter(c => c.status === 'open').length);
+    set('availableEquipment', equipment.reduce((sum, e) => sum + e.available_quantity, 0));
+    set('totalFacilities', facilities.length);
+  } catch (err) {
+    console.error('Failed to load officer dashboard stats:', err);
+  }
+}
 
-            const row = this.closest("tr");
+function set(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-            const status = row.querySelector(".status-pill");
+// --- Booking requests ---
 
-            if (status) {
-                status.textContent = "Approved";
-                status.className =
-                    "status-pill status-pill--available";
-            }
+async function loadBookingRequests() {
+  const body = document.getElementById('bookingRequestsBody');
+  if (!body) return;
 
-            updateOfficerStatistics();
+  try {
+    const bookings = await apiClient.getBookings();
+    body.innerHTML = bookings.length
+      ? bookings.map(b => `
+          <tr class="booking-row">
+            <td>${b.student_name}</td>
+            <td>${b.facility_name}</td>
+            <td>${b.date}</td>
+            <td>${b.start_time} - ${b.end_time}</td>
+            <td><span class="status-pill ${statusPillClass(b.status)}">${statusLabel(b.status)}</span></td>
+            <td>${
+              b.status === 'pending'
+                ? `<button class="btn btn--primary btn--sm" data-approve-booking="${b.id}">Approve</button>
+                   <button class="btn btn--outline-danger btn--sm" data-reject-booking="${b.id}">Reject</button>`
+                : ''
+            }</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="6">No booking requests.</td></tr>';
 
-        });
-
+    body.querySelectorAll('[data-approve-booking]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.updateBookingStatus(btn.dataset.approveBooking, 'confirmed');
+          loadBookingRequests();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
-
-    document.querySelectorAll(".reject-booking").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            const row = this.closest("tr");
-
-            const status = row.querySelector(".status-pill");
-
-            if (status) {
-                status.textContent = "Rejected";
-                status.className =
-                    "status-pill status-pill--booked";
-            }
-
-            updateOfficerStatistics();
-
-        });
-
+    body.querySelectorAll('[data-reject-booking]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.updateBookingStatus(btn.dataset.rejectBooking, 'cancelled');
+          loadBookingRequests();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
-
+  } catch (err) {
+    console.error('Failed to load booking requests:', err);
+  }
 }
 
-// Equipment Loans
+// --- Loan requests ---
 
-function initializeLoanActions() {
+async function loadLoanRequests() {
+  const body = document.getElementById('loanRequestsBody');
+  if (!body) return;
 
-    document.querySelectorAll(".approve-loan").forEach(button => {
+  try {
+    const loans = await apiClient.getLoans();
+    body.innerHTML = loans.length
+      ? loans.map(l => `
+          <tr class="loan-row">
+            <td>${l.student_name}</td>
+            <td>${l.equipment_name}</td>
+            <td>${l.quantity}</td>
+            <td>${l.due_at || '-'}</td>
+            <td><span class="status-pill ${statusPillClass(l.status)}">${statusLabel(l.status)}</span></td>
+            <td>${
+              l.status === 'pending'
+                ? `<button class="btn btn--primary btn--sm" data-approve-loan="${l.id}">Approve</button>
+                   <button class="btn btn--outline-danger btn--sm" data-reject-loan="${l.id}">Reject</button>`
+                : ['approved', 'checked_out'].includes(l.status)
+                ? `<button class="btn btn--outline btn--sm" data-return-loan="${l.id}">Mark Returned</button>`
+                : ''
+            }</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="6">No loan requests.</td></tr>';
 
-        button.addEventListener("click", function () {
-
-            const row = this.closest("tr");
-
-            const status = row.querySelector(".status-pill");
-
-            if (status) {
-                status.textContent = "Approved";
-                status.className =
-                    "status-pill status-pill--available";
-            }
-
-            updateOfficerStatistics();
-
-        });
-
+    body.querySelectorAll('[data-approve-loan]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.approveLoan(btn.dataset.approveLoan);
+          loadLoanRequests();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
-
-    document.querySelectorAll(".reject-loan").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            const row = this.closest("tr");
-
-            const status = row.querySelector(".status-pill");
-
-            if (status) {
-                status.textContent = "Rejected";
-                status.className =
-                    "status-pill status-pill--booked";
-            }
-
-            updateOfficerStatistics();
-
-        });
-
+    body.querySelectorAll('[data-reject-loan]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.rejectLoan(btn.dataset.rejectLoan);
+          loadLoanRequests();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
-
-}
-
-// Complaints
-
-function initializeComplaintActions() {
-
-    document.querySelectorAll(".resolve-complaint").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            const row = this.closest("tr");
-
-            const status = row.querySelector(".status-pill");
-
-            if (status) {
-                status.textContent = "Resolved";
-                status.className =
-                    "status-pill status-pill--available";
-            }
-
-            updateOfficerStatistics();
-
-        });
-
+    body.querySelectorAll('[data-return-loan]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.returnLoan(btn.dataset.returnLoan);
+          loadLoanRequests();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
-
+  } catch (err) {
+    console.error('Failed to load loan requests:', err);
+  }
 }
 
-function initializeDeleteButtons() {
-
-    document.querySelectorAll(".delete-row").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            if (confirm("Delete this record?")) {
-
-                this.closest("tr").remove();
-
-                updateOfficerStatistics();
-
-            }
-
-        });
-
-    });
-
-}
-
-// Dashboard Statistics
-
-function updateOfficerStatistics() {
-
-    const bookings =
-        document.querySelectorAll(".booking-row").length;
-
-    const loans =
-        document.querySelectorAll(".loan-row").length;
-
-    const complaints =
-        document.querySelectorAll(".complaint-row").length;
-
-    const facilities =
-        document.querySelectorAll(".facility-card").length;
-
-    const equipment =
-        document.querySelectorAll(".equipment-card").length;
-
-    const bookingCard =
-        document.getElementById("totalBookings");
-
-    const loanCard =
-        document.getElementById("totalLoans");
-
-    const complaintCard =
-        document.getElementById("totalComplaints");
-
-    const facilityCard =
-        document.getElementById("totalFacilities");
-
-    const equipmentCard =
-        document.getElementById("totalEquipment");
-
-    if (bookingCard)
-        bookingCard.textContent = bookings;
-
-    if (loanCard)
-        loanCard.textContent = loans;
-
-    if (complaintCard)
-        complaintCard.textContent = complaints;
-
-    if (facilityCard)
-        facilityCard.textContent = facilities;
-
-    if (equipmentCard)
-        equipmentCard.textContent = equipment;
-
-}
-// STATISTICS
-
-const dashboardStats = {
-    totalBookings: 48,
-    approvedBookings: 35,
-    pendingBookings: 13,
-    pendingLoans: 8,
-    todayBookings: 9,
-    openComplaints: 5,
-    availableEquipment: 286,
-    totalFacilities: 8
-};
-
-function loadDashboardStatistics() {
-
-    const totalBookings = document.getElementById("totalBookings");
-    const approvedBookings = document.getElementById("approvedBookings");
-    const pendingBookings = document.getElementById("pendingBookings");
-    const pendingLoans = document.getElementById("pendingLoans");
-    const todayBookings = document.getElementById("todayBookings");
-    const openComplaints = document.getElementById("openComplaints");
-    const availableEquipment = document.getElementById("availableEquipment");
-    const totalFacilities = document.getElementById("totalFacilities");
-
-    if (totalBookings)
-        totalBookings.textContent = dashboardStats.totalBookings;
-
-    if (approvedBookings)
-        approvedBookings.textContent = dashboardStats.approvedBookings;
-
-    if (pendingBookings)
-        pendingBookings.textContent = dashboardStats.pendingBookings;
-
-    if (pendingLoans)
-        pendingLoans.textContent = dashboardStats.pendingLoans;
-
-    if (todayBookings)
-        todayBookings.textContent = dashboardStats.todayBookings;
-
-    if (openComplaints)
-        openComplaints.textContent = dashboardStats.openComplaints;
-
-    if (availableEquipment)
-        availableEquipment.textContent = dashboardStats.availableEquipment;
-
-    if (totalFacilities)
-        totalFacilities.textContent = dashboardStats.totalFacilities;
-
-}
-
-loadDashboardStatistics();
-
-function updateOfficerDashboardStats() {
-
-    const pendingBookings =
-        document.querySelectorAll(".status-pill--pending").length;
-
-    const approvedBookings =
-        document.querySelectorAll(".status-pill--available").length;
-
-    const openComplaints =
-        document.querySelectorAll(".complaint-open").length;
-
-    const pendingBookingCard =
-        document.getElementById("pendingBookings");
-
-    if (pendingBookingCard) {
-        pendingBookingCard.textContent = pendingBookings;
-    }
-
-    const pendingLoanCard =
-        document.getElementById("pendingLoans");
-
-    if (pendingLoanCard) {
-        pendingLoanCard.textContent = pendingBookings;
-    }
-
-    const complaintsCard =
-        document.getElementById("openComplaints");
-
-    if (complaintsCard) {
-        complaintsCard.textContent = openComplaints;
-    }
-
-}
-document.addEventListener("DOMContentLoaded", function () {
-
-    updateOfficerDashboardStats();
-
-});
-//NOTIFICATIONS
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const notificationCount = document.getElementById("notificationCount");
-    const markAllBtn = document.getElementById("markAllRead");
-
-    if (!markAllBtn) return;
-
-    markAllBtn.addEventListener("click", function () {
-
-        const statusPills = document.querySelectorAll(".data-table tbody .status-pill");
-
-        statusPills.forEach(function (pill) {
-
-            const status = pill.textContent.trim();
-
-            if (
-                status === "New" ||
-                status === "Pending" ||
-                status === "Urgent" ||
-                status === "Warning"
-            ) {
-
-                pill.textContent = "Read";
-
-                pill.classList.remove(
-                    "status-pill--pending",
-                    "status-pill--booked"
-                );
-
-                pill.classList.add("status-pill--available");
-
-            }
-
-        });
-
-        if (notificationCount) {
-            notificationCount.textContent = "0";
+// --- Equipment inventory ---
+
+async function loadEquipmentInventory() {
+  const body = document.getElementById('equipmentInventoryBody');
+  if (!body) return;
+
+  try {
+    const equipment = await apiClient.getEquipment();
+    body.innerHTML = equipment.length
+      ? equipment.map(e => `
+          <tr>
+            <td>${e.name}</td>
+            <td>${e.category}</td>
+            <td>${e.available_quantity} / ${e.total_quantity}</td>
+            <td><span class="status-pill ${e.status === 'in_stock' ? 'status-pill--available' : e.status === 'low_stock' ? 'status-pill--pending' : 'status-pill--booked'}">${statusLabel(e.status)}</span></td>
+            <td><button class="btn btn--outline btn--sm" data-edit-equipment="${e.id}" data-total="${e.total_quantity}" data-available="${e.available_quantity}">Edit</button></td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="5">No equipment yet.</td></tr>';
+
+    body.querySelectorAll('[data-edit-equipment]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const onLoan = Number(btn.dataset.total) - Number(btn.dataset.available);
+        const input = prompt('New total quantity:', btn.dataset.total);
+        if (input === null) return;
+        const newTotal = parseInt(input, 10);
+        if (!Number.isFinite(newTotal) || newTotal < onLoan) {
+          alert(`Total quantity must be a number >= ${onLoan} (currently on loan).`);
+          return;
         }
-
-        alert("All notifications have been marked as read.");
-
+        try {
+          await apiClient.updateEquipment(btn.dataset.editEquipment, {
+            total_quantity: newTotal,
+            available_quantity: newTotal - onLoan,
+          });
+          loadEquipmentInventory();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
+  } catch (err) {
+    console.error('Failed to load equipment inventory:', err);
+  }
+}
 
-});
-// REPORTS
+function wireEquipmentForm() {
+  const form = document.getElementById('equipmentForm');
+  if (!form) return;
 
-document.addEventListener("DOMContentLoaded", function () {
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const errorEl = document.getElementById('equipmentError');
+    const quantity = parseInt(document.getElementById('equipmentQuantity').value, 10);
 
-    const generateReportBtn = document.getElementById("generateReport");
-
-    if (generateReportBtn) {
-
-        generateReportBtn.addEventListener("click", function () {
-
-            const reportType = document.getElementById("reportType").value;
-            const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value;
-
-            if (!startDate || !endDate) {
-                alert("Please select the report dates.");
-                return;
-            }
-
-            alert(
-                reportType +
-                " Report generated successfully!\n\n" +
-                "Period: " +
-                startDate +
-                " to " +
-                endDate
-            );
-
-        });
-
+    try {
+      await apiClient.request('/equipment', {
+        method: 'POST',
+        body: {
+          name: document.getElementById('equipmentName').value,
+          category: document.getElementById('equipmentCategory').value,
+          total_quantity: quantity,
+        },
+      });
+      form.reset();
+      closeModal(document.getElementById('equipmentModal'));
+      loadEquipmentInventory();
+      loadOfficerDashboard();
+    } catch (err) {
+      if (errorEl) { errorEl.textContent = err.message; errorEl.classList.add('visible'); }
+      else alert(err.message);
     }
+  });
+}
 
-});
-//SEARCH TABLES
+// --- Facilities ---
 
-document.addEventListener("DOMContentLoaded", function () {
+async function loadFacilities() {
+  const body = document.getElementById('facilitiesBody');
+  if (!body) return;
 
-    const searchInput = document.querySelector(".search-box input");
+  try {
+    const facilities = await apiClient.getFacilities();
+    body.innerHTML = facilities.length
+      ? facilities.map(f => `
+          <tr>
+            <td>${f.name}</td>
+            <td>${f.capacity || '-'}</td>
+            <td><span class="status-pill ${f.is_active ? 'status-pill--available' : 'status-pill--booked'}">${f.is_active ? 'Available' : 'Closed'}</span></td>
+            <td><button class="btn btn--outline btn--sm" data-toggle-facility="${f.id}" data-active="${f.is_active}">${f.is_active ? 'Close' : 'Reopen'}</button></td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="4">No facilities yet.</td></tr>';
 
-    if (!searchInput) return;
-
-    searchInput.addEventListener("keyup", function () {
-
-        const value = this.value.toLowerCase();
-
-        const rows = document.querySelectorAll("tbody tr");
-
-        rows.forEach(row => {
-
-            row.style.display =
-                row.innerText.toLowerCase().includes(value)
-                    ? ""
-                    : "none";
-
-        });
-
+    // Deleting a facility is admin-only server-side (see backend/src/routes/facilities.routes.js);
+    // officers can only open/close it, which is what "Manage Facilities" actually needs day to day.
+    body.querySelectorAll('[data-toggle-facility]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.request(`/facilities/${btn.dataset.toggleFacility}`, {
+            method: 'PUT',
+            body: { is_active: btn.dataset.active === '1' ? 0 : 1 },
+          });
+          loadFacilities();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
     });
+  } catch (err) {
+    console.error('Failed to load facilities:', err);
+  }
+}
 
-});
+function wireFacilityForm() {
+  const form = document.getElementById('facilityForm');
+  if (!form) return;
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const errorEl = document.getElementById('facilityError');
+
+    try {
+      await apiClient.request('/facilities', {
+        method: 'POST',
+        body: {
+          name: document.getElementById('facilityName').value,
+          category: document.getElementById('facilityCategory').value,
+          capacity: parseInt(document.getElementById('facilityCapacity').value, 10) || null,
+          description: document.getElementById('facilityDescription').value || null,
+        },
+      });
+      form.reset();
+      closeModal(document.getElementById('facilityModal'));
+      loadFacilities();
+      loadOfficerDashboard();
+    } catch (err) {
+      if (errorEl) { errorEl.textContent = err.message; errorEl.classList.add('visible'); }
+      else alert(err.message);
+    }
+  });
+}
+
+// --- Complaints ---
+
+async function loadComplaints() {
+  const body = document.getElementById('complaintsBody');
+  if (!body) return;
+
+  try {
+    const complaints = await apiClient.getComplaints();
+    body.innerHTML = complaints.length
+      ? complaints.map(c => `
+          <tr>
+            <td>${c.student_name}</td>
+            <td>${c.subject}</td>
+            <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            <td><span class="status-pill ${statusPillClass(c.status)}">${statusLabel(c.status)}</span></td>
+            <td>${
+              c.status !== 'resolved'
+                ? `<button class="btn btn--primary btn--sm" data-resolve-complaint="${c.id}">Resolve</button>`
+                : ''
+            }</td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="5">No complaints.</td></tr>';
+
+    body.querySelectorAll('[data-resolve-complaint]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await apiClient.resolveComplaint(btn.dataset.resolveComplaint, 'resolved');
+          loadComplaints();
+          loadOfficerDashboard();
+        } catch (err) { alert(err.message); }
+      });
+    });
+  } catch (err) {
+    console.error('Failed to load complaints:', err);
+  }
+}
+
+// --- Officer notifications ---
+
+async function loadOfficerNotifications() {
+  const body = document.getElementById('officerNotificationsBody');
+  if (!body) return;
+
+  try {
+    const notifications = await apiClient.getNotifications();
+    set('notificationCount', notifications.filter(n => !n.is_read).length);
+    const notifCount = document.getElementById('notifCount');
+    if (notifCount) notifCount.textContent = notifications.filter(n => !n.is_read).length;
+
+    body.innerHTML = notifications.length
+      ? notifications.map(n => `
+          <tr>
+            <td>${n.message}</td>
+            <td>${n.type.charAt(0).toUpperCase() + n.type.slice(1)}</td>
+            <td>${new Date(n.created_at).toLocaleString()}</td>
+            <td><span class="status-pill ${n.is_read ? 'status-pill--available' : 'status-pill--pending'}">${n.is_read ? 'Read' : 'New'}</span></td>
+          </tr>
+        `).join('')
+      : '<tr><td colspan="4">No notifications.</td></tr>';
+  } catch (err) {
+    console.error('Failed to load notifications:', err);
+  }
+}
+
+function wireMarkAllRead() {
+  const btn = document.getElementById('markAllRead');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    try {
+      await apiClient.markAllNotificationsAsRead();
+      loadOfficerNotifications();
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+}
+
+// --- Reports ---
+
+async function loadReportStats() {
+  const el = document.getElementById('reportTotalBookings');
+  if (!el) return;
+
+  try {
+    const [bookings, loans, facilities, complaints] = await Promise.all([
+      apiClient.getBookings(),
+      apiClient.getLoans(),
+      apiClient.getFacilities(),
+      apiClient.getComplaints(),
+    ]);
+    set('reportTotalBookings', bookings.length);
+    set('reportTotalLoans', loans.length);
+    set('reportTotalFacilities', facilities.length);
+    set('reportTotalComplaints', complaints.length);
+  } catch (err) {
+    console.error('Failed to load report stats:', err);
+  }
+}
+
+function wireReportControls() {
+  const generateBtn = document.getElementById('generateReportBtn');
+  if (!generateBtn) return;
+
+  const typeSelect = document.getElementById('reportTypeSelect');
+  const fromInput = document.getElementById('reportFrom');
+  const toInput = document.getElementById('reportTo');
+  const head = document.getElementById('reportResultsHead');
+  const body = document.getElementById('reportResultsBody');
+
+  generateBtn.addEventListener('click', async () => {
+    try {
+      const rows = await apiClient.generateReport(typeSelect.value, fromInput.value, toInput.value);
+      if (!rows.length) {
+        head.innerHTML = '';
+        body.innerHTML = '<tr><td>No data for the selected range.</td></tr>';
+        return;
+      }
+      const columns = Object.keys(rows[0]);
+      head.innerHTML = `<tr>${columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+      body.innerHTML = rows.map(row => `<tr>${columns.map(c => `<td>${row[c] ?? ''}</td>`).join('')}</tr>`).join('');
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+  document.getElementById('exportPdfBtn')?.addEventListener('click', () => {
+    apiClient.downloadReport(typeSelect.value, 'pdf', fromInput.value, toInput.value).catch(err => alert(err.message));
+  });
+  document.getElementById('exportExcelBtn')?.addEventListener('click', () => {
+    apiClient.downloadReport(typeSelect.value, 'xlsx', fromInput.value, toInput.value).catch(err => alert(err.message));
+  });
+}

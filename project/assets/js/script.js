@@ -52,3 +52,25 @@ function initializeContactForm() {
     });
 
 }
+
+// Smooth-scroll for in-page anchor links (e.g. landing page nav → #about)
+function initializeSmoothScroll() {
+
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+
+        link.addEventListener("click", function (e) {
+
+            const targetId = this.getAttribute("href");
+            if (targetId === "#") return;
+
+            const target = document.querySelector(targetId);
+            if (!target) return;
+
+            e.preventDefault();
+            target.scrollIntoView({ behavior: "smooth" });
+
+        });
+
+    });
+
+}

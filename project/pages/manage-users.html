@@ -29,14 +29,14 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
-<span class="badge-dot">4</span>
+<span class="badge-dot" id="notifCount">4</span>
 </button>
 
 <div class="topbar-profile">
 <img src="../assets/images/profile.jpg" class="topbar-avatar">
-<span class="topbar-username">Administrator</span>
+<span class="topbar-username" id="topbarUsername">Administrator</span>
 </div>
 
 </div>
@@ -107,7 +107,7 @@ Sports Booking System
 <i class="fa-solid fa-users"></i>
 </div>
 <div>
-<span class="stat-number">1,259</span>
+<span class="stat-number" id="statTotalUsers">0</span>
 <span class="stat-label">Total Users</span>
 </div>
 </div>
@@ -117,7 +117,7 @@ Sports Booking System
 <i class="fa-solid fa-user-graduate"></i>
 </div>
 <div>
-<span class="stat-number">1,248</span>
+<span class="stat-number" id="statTotalStudentsMU">0</span>
 <span class="stat-label">Students</span>
 </div>
 </div>
@@ -127,7 +127,7 @@ Sports Booking System
 <i class="fa-solid fa-whistle"></i>
 </div>
 <div>
-<span class="stat-number">9</span>
+<span class="stat-number" id="statTotalOfficersMU">0</span>
 <span class="stat-label">Sports Officers</span>
 </div>
 </div>
@@ -137,7 +137,7 @@ Sports Booking System
 <i class="fa-solid fa-user-shield"></i>
 </div>
 <div>
-<span class="stat-number">2</span>
+<span class="stat-number" id="statTotalAdminsMU">0</span>
 <span class="stat-label">Administrators</span>
 </div>
 </div>
@@ -154,11 +154,11 @@ Sports Booking System
     placeholder="Search by name or email">
 </div>
 
-<div class="filter-chips">
-<button class="chip chip--active">All</button>
-<button class="chip">Students</button>
-<button class="chip">Sports Officers</button>
-<button class="chip">Administrators</button>
+<div class="filter-chips" id="userRoleFilters">
+<button class="chip chip--active" data-role="all">All</button>
+<button class="chip" data-role="student">Students</button>
+<button class="chip" data-role="officer">Sports Officers</button>
+<button class="chip" data-role="admin">Administrators</button>
 </div>
 
 </section>
@@ -192,130 +192,7 @@ Add User
 
 </thead>
 
-<tbody>
-
-<tr class="user-row">
-
-<td>Jane Wanjiru</td>
-<td>jane@usiu.ac.ke</td>
-<td>Student</td>
-
-<td>
-<span class="status-pill status-pill--available">
-Active
-</span>
-</td>
-
-<td class="table-action-group">
-
-<button class="btn btn--outline btn--sm edit-user">
-Edit
-</button>
-
-<button class="btn btn--outline btn--sm suspend-user">
-Suspend
-</button>
-
-<button class="btn btn--outline-danger btn--sm delete-user">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-
-
-<tr class="user-row">
-
-<td>Brian Kiptoo</td>
-<td>brian@usiu.ac.ke</td>
-<td>Student</td>
-
-<td>
-<span class="status-pill status-pill--pending">
-Suspended
-</span>
-</td>
-
-<td class="table-action-group">
-
-<button class="btn btn--outline btn--sm edit-user">
-Edit
-</button>
-
-<button class="btn btn--outline btn--sm suspend-user">
-Activate
-</button>
-
-<button class="btn btn--outline-danger btn--sm delete-user">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-
-
-<tr class="user-row">
-
-<td>Mr. Otieno</td>
-<td>otieno@usiu.ac.ke</td>
-<td>Sports Officer</td>
-
-<td>
-<span class="status-pill status-pill--available">
-Active
-</span>
-</td>
-
-<td class="table-action-group">
-
-<button class="btn btn--outline btn--sm edit-user">
-Edit
-</button>
-
-<button class="btn btn--outline btn--sm suspend-user">
-Suspend
-</button>
-
-<button class="btn btn--outline-danger btn--sm delete-user">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-
-
-<tr class="user-row">
-
-<td>Admin User</td>
-<td>admin@usiu.ac.ke</td>
-<td>Administrator</td>
-
-<td>
-<span class="status-pill status-pill--available">
-Active
-</span>
-</td>
-
-<td class="table-action-group">
-
-<button class="btn btn--outline btn--sm edit-user">
-Edit
-</button>
-
-<button class="btn btn--outline-danger btn--sm delete-user">
-Delete
-</button>
-
-</td>
-
-</tr>
-
+<tbody id="usersBody">
 </tbody>
 
 </table>
@@ -362,6 +239,7 @@ Administrator account updated
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script src="../assets/js/auth.js"></script>

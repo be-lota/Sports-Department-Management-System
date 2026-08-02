@@ -36,7 +36,7 @@
 
   <aside class="sidebar" id="sidebar">
     <nav class="sidebar-nav">
-      <a href="../pages/student-dashboard.html" class="sidebar-link active"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a>
+      <a href="../pages/Studentdashboard.html" class="sidebar-link active"><i class="fa-solid fa-gauge"></i><span>Dashboard</span></a>
       <a href="../pages/facilities.html" class="sidebar-link"><i class="fa-solid fa-building-columns"></i><span>Book Facility</span></a>
       <a href="../pages/equipment.html" class="sidebar-link"><i class="fa-solid fa-basketball"></i><span>Equipment</span></a>
       <a href="../pages/notifications.html" class="sidebar-link"><i class="fa-solid fa-bell"></i><span>Notifications</span></a>
@@ -62,28 +62,28 @@
       <div class="stat-card">
         <div class="stat-icon stat-icon--blue"><i class="fa-solid fa-calendar-check"></i></div>
         <div>
-          <span class="stat-number">14</span>
+          <span class="stat-number" id="statTotalBookings">0</span>
           <span class="stat-label">Total Bookings</span>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon stat-icon--green"><i class="fa-solid fa-basketball"></i></div>
         <div>
-          <span class="stat-number">6</span>
+          <span class="stat-number" id="statEquipmentBorrowed">0</span>
           <span class="stat-label">Equipment Borrowed</span>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon stat-icon--amber"><i class="fa-solid fa-hourglass-half"></i></div>
         <div>
-          <span class="stat-number">2</span>
+          <span class="stat-number" id="statPendingRequests">0</span>
           <span class="stat-label">Pending Requests</span>
         </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon stat-icon--red"><i class="fa-solid fa-bell"></i></div>
         <div>
-          <span class="stat-number">3</span>
+          <span class="stat-number" id="statUnreadNotifications">0</span>
           <span class="stat-label">Notifications</span>
         </div>
       </div>
@@ -103,19 +103,7 @@
               <thead>
                 <tr><th>Facility</th><th>Date</th><th>Time</th><th>Status</th></tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Indoor Basketball Court</td>
-                  <td>18 Jul 2026</td>
-                  <td>3:00 PM</td>
-                  <td><span class="status-pill status-pill--pending">Pending</span></td>
-                </tr>
-                <tr>
-                  <td>Main Football Pitch</td>
-                  <td>20 Jul 2026</td>
-                  <td>5:00 PM</td>
-                  <td><span class="status-pill status-pill--available">Confirmed</span></td>
-                </tr>
+              <tbody id="upcomingBookingsBody">
               </tbody>
             </table>
           </div>
@@ -131,19 +119,7 @@
               <thead>
                 <tr><th>Equipment</th><th>Quantity</th><th>Status</th><th>Return Date</th></tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Basketballs</td>
-                  <td>2</td>
-                  <td><span class="status-pill status-pill--pending">Pending</span></td>
-                  <td>22 Jul 2026</td>
-                </tr>
-                <tr>
-                  <td>Training Cones</td>
-                  <td>1 pack</td>
-                  <td><span class="status-pill status-pill--available">Approved</span></td>
-                  <td>19 Jul 2026</td>
-                </tr>
+              <tbody id="recentLoansBody">
               </tbody>
             </table>
           </div>
@@ -185,7 +161,9 @@
   </main>
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/student.js"></script>
+<script src="../assets/js/auth.js"></script>
 </body>
 </html>

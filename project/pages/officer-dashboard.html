@@ -34,14 +34,14 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
-<span class="badge-dot">5</span>
+<span class="badge-dot" id="notifCount">5</span>
 </button>
 
 <div class="topbar-profile">
 <img src="../assets/images/profile.jpg" class="topbar-avatar">
-<span class="topbar-username">
+<span class="topbar-username" id="topbarUsername">
 Sports Officer
 </span>
 </div>
@@ -148,25 +148,6 @@ Inventory
 </div>
 
 </section>
-
-
-
-<section class="stats-grid">
-
-<div class="stat-card">
-
-<div class="stat-icon stat-icon--blue">
-<i class="fa-solid fa-calendar-check"></i>
-</div>
-
-<div>
-<span class="stat-number">12</span>
-<span class="stat-label">
-Pending Facility Requests
-</span>
-</div>
-
-</div>
 
 
 
@@ -362,7 +343,7 @@ Complaints
 
 </a>
 
-<a href="../pages/  reports.html"
+<a href="../pages/reports.html"
 class="btn btn--outline">
 
 <i class="fa-solid fa-chart-column"></i>
@@ -679,6 +660,7 @@ Generate Reports
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

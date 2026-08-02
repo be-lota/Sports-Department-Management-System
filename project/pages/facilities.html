@@ -272,33 +272,6 @@
   </main>
 </div>
 
-<div class="modal-overlay" id="bookingModal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>Book Facility: <span id="modalFacilityName">Facility Name</span></h3>
-      <button class="modal-close" data-close-modal="bookingModal" aria-label="Close">&times;</button>
-    </div>
-    <form class="modal-form" id="bookingForm">
-      <label>Date
-        <input type="date" name="date" required>
-      </label>
-      <label>Time
-        <input type="time" name="time" required>
-      </label>
-      <label>Purpose
-        <input type="text" name="purpose" placeholder="e.g. Team Practice" required>
-      </label>
-      <label>Number of Participants
-        <input type="number" name="participants" min="1" placeholder="e.g. 10" required>
-      </label>
-      <div class="modal-actions">
-        <button type="button" class="btn btn--ghost" data-close-modal="bookingModal">Cancel</button>
-        <button type="submit" class="btn btn--primary">Submit Booking</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <div class="modal" id="locationModal">
 
     <div class="modal-content">
@@ -332,7 +305,7 @@
 
     <div class="booking-modal-content">
 
-        <span class="close-modal" id="closeBookingModal">
+        <span class="close-modal" id="closeBookingModal" data-close-modal="bookingModal">
             &times;
         </span>
 
@@ -341,12 +314,6 @@
         </h2>
 
         <form id="bookingForm">
-
-            <label>Choose Location</label>
-
-            <select id="facilityLocation" required>
-
-            </select>
 
             <label>Select Date</label>
 
@@ -362,6 +329,8 @@
                 id="bookingTime"
                 required>
 
+            <p id="bookingError" class="form-error"></p>
+
             <button
                 type="submit"
                 class="btn btn--primary">
@@ -375,7 +344,9 @@
     </div>
 
 </div>
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/student.js"></script>
+<script src="../assets/js/auth.js"></script>
 </body>
 </html>

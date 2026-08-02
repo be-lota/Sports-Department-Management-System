@@ -33,16 +33,16 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
-<span class="badge-dot">4</span>
+<span class="badge-dot" id="notifCount">4</span>
 </button>
 
 <div class="topbar-profile">
 <img src="../assets/images/profile.jpg"
 class="topbar-avatar">
 
-<span class="topbar-username">
+<span class="topbar-username" id="topbarUsername">
 Administrator
 </span>
 
@@ -179,11 +179,11 @@ type="text" id="notificationTitle" placeholder="Enter notification title" requir
 Send To
 <select id="notificationAudience" required>
 
-<option>Everyone</option>
+<option value="all">Everyone</option>
 
-<option>Students Only</option>
+<option value="students">Students Only</option>
 
-<option>Sports Officers Only</option>
+<option value="officers">Sports Officers Only</option>
 
 </select>
 
@@ -200,6 +200,8 @@ placeholder="Write your notification..."
 required></textarea>
 
 </label>
+
+<p id="notificationStatus" class="form-hint"></p>
 
 <div class="form-actions">
 
@@ -401,6 +403,7 @@ Delete
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/admin.js"></script>
 <script src="../assets/js/auth.js"></script>

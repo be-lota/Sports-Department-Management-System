@@ -32,7 +32,7 @@ Sports Booking System
 
 <div class="topbar-right">
 
-<button class="icon-btn">
+<button class="icon-btn" id="notifBell">
 <i class="fa-regular fa-bell"></i>
 </button>
 
@@ -40,7 +40,7 @@ Sports Booking System
 
 <img src="../assets/images/profile.jpg" class="topbar-avatar">
 
-<span class="topbar-username">
+<span class="topbar-username" id="topbarUsername">
 Sports Officer
 </span>
 
@@ -158,120 +158,7 @@ placeholder="Search bookings...">
 
 </thead>
 
-<tbody>
-
-    <tr class="booking-row">
-
-        <td>Jane Wanjiru</td>
-
-        <td>Football Pitch</td>
-
-        <td>20 Jul 2026</td>
-
-        <td>2:00 PM</td>
-
-        <td>
-            <span class="status-pill status-pill--pending">
-                Pending
-            </span>
-        </td>
-
-        <td>
-
-            <button class="btn btn--primary btn--sm approve-booking">
-                Approve
-            </button>
-
-            <button class="btn btn--outline-danger btn--sm reject-booking">
-                Reject
-            </button>
-
-        </td>
-
-    </tr>
-
-    <tr class="booking-row">
-
-        <td>Brian Kiptoo</td>
-
-        <td>Basketball Court</td>
-
-        <td>21 Jul 2026</td>
-
-        <td>4:00 PM</td>
-
-        <td>
-            <span class="status-pill status-pill--pending">
-                Pending
-            </span>
-        </td>
-
-        <td>
-
-            <button class="btn btn--primary btn--sm approve-booking">
-                Approve
-            </button>
-
-            <button class="btn btn--outline-danger btn--sm reject-booking">
-                Reject
-            </button>
-
-        </td>
-
-    </tr>
-
-    <tr class="booking-row">
-
-        <td>Amina Yusuf</td>
-
-        <td>Tennis Court</td>
-
-        <td>22 Jul 2026</td>
-
-        <td>10:00 AM</td>
-
-        <td>
-            <span class="status-pill status-pill--available">
-                Approved
-            </span>
-        </td>
-
-        <td>
-
-            <button class="btn btn--outline btn--sm view-booking">
-                View
-            </button>
-
-        </td>
-
-    </tr>
-
-    <tr class="booking-row">
-
-        <td>David Mwangi</td>
-
-        <td>Gymnasium</td>
-
-        <td>22 Jul 2026</td>
-
-        <td>9:00 AM</td>
-
-        <td>
-            <span class="status-pill status-pill--booked">
-                Rejected
-            </span>
-        </td>
-
-        <td>
-
-            <button class="btn btn--outline btn--sm view-booking">
-                View
-            </button>
-
-        </td>
-
-    </tr>
-
+<tbody id="bookingRequestsBody">
 </tbody>
 
 </table>
@@ -284,6 +171,7 @@ placeholder="Search bookings...">
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

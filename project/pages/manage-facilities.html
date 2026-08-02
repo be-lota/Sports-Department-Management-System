@@ -28,13 +28,13 @@
 
     <div class="topbar-right">
 
-        <button class="icon-btn">
+        <button class="icon-btn" id="notifBell">
             <i class="fa-regular fa-bell"></i>
         </button>
 
         <div class="topbar-profile">
             <img src="../assets/images/profile.jpg" class="topbar-avatar">
-            <span class="topbar-username">
+            <span class="topbar-username" id="topbarUsername">
                 Sports Officer
             </span>
         </div>
@@ -143,118 +143,7 @@ Add Facility
 
 </thead>
 
-<tbody>
-
-<tr>
-
-<td>Football Pitch</td>
-
-<td>60</td>
-
-<td>
-<span class="status-pill status-pill--available">
-Available
-</span>
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm">
-Edit
-</button>
-
-<button class="btn btn--outline-danger btn--sm">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Basketball Court</td>
-
-<td>30</td>
-
-<td>
-
-<span class="status-pill status-pill--available">
-Available
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm">
-Edit
-</button>
-
-<button class="btn btn--outline-danger btn--sm">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Tennis Court</td>
-
-<td>12</td>
-
-<td>
-
-<span class="status-pill status-pill--pending">
-Maintenance
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm">
-Edit
-</button>
-
-<button class="btn btn--outline-danger btn--sm">
-Delete
-</button>
-
-</td>
-
-</tr>
-
-<tr>
-
-<td>Gymnasium</td>
-
-<td>100</td>
-
-<td>
-
-<span class="status-pill status-pill--booked">
-Closed
-</span>
-
-</td>
-
-<td>
-
-<button class="btn btn--outline btn--sm">
-Edit
-</button>
-
-<button class="btn btn--outline-danger btn--sm">
-Delete
-</button>
-
-</td>
-
-</tr>
-
+<tbody id="facilitiesBody">
 </tbody>
 
 </table>
@@ -287,7 +176,7 @@ data-close-modal="facilityModal">
 
 </div>
 
-<form class="modal-form">
+<form class="modal-form" id="facilityForm">
 
 <label>
 
@@ -295,8 +184,24 @@ Facility Name
 
 <input
 type="text"
+id="facilityName"
 placeholder="Football Pitch"
 required>
+
+</label>
+
+<label>
+
+Category
+
+<select id="facilityCategory" required>
+<option value="football">Football</option>
+<option value="basketball">Basketball</option>
+<option value="tennis">Tennis</option>
+<option value="volleyball">Volleyball</option>
+<option value="rugby">Rugby</option>
+<option value="gym">Gym</option>
+</select>
 
 </label>
 
@@ -306,6 +211,7 @@ Capacity
 
 <input
 type="number"
+id="facilityCapacity"
 placeholder="50"
 required>
 
@@ -315,11 +221,10 @@ required>
 
 Status
 
-<select>
+<select id="facilityStatus">
 
-<option>Available</option>
-<option>Maintenance</option>
-<option>Closed</option>
+<option value="1">Available</option>
+<option value="0">Closed</option>
 
 </select>
 
@@ -331,9 +236,12 @@ Description
 
 <textarea
 rows="4"
+id="facilityDescription"
 placeholder="Facility description"></textarea>
 
 </label>
+
+<p id="facilityError" class="form-error"></p>
 
 <div class="modal-actions">
 
@@ -362,6 +270,7 @@ Save Facility
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>

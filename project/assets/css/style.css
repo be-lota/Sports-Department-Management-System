@@ -87,7 +87,7 @@ ul{
     align-items:center;
     background:
     linear-gradient(rgba(15,27,43,.85),rgba(15,27,43,.85)),
-    url("sports.jpg") center/cover;
+    url("../images/sports.jpg") center/cover;
 }
 
 .login-right{
@@ -960,14 +960,18 @@ ul{
  
 
 .status-pill{
-    position:absolute;
-    top:12px;
-    right:12px;
     display:inline-block;
     padding:6px 12px;
     border-radius:20px;
     font-size:13px;
     font-weight:600;
+}
+
+/* Overlay badge on card thumbnails (e.g. equipment/facility stock status) */
+.facility-card-img .status-pill{
+    position:absolute;
+    top:12px;
+    right:12px;
 }
  
 .status-pill--available{
@@ -1264,7 +1268,6 @@ ul{
 .facility-meta li{margin-bottom:10px;color:#C9D4E2;font-size:14px}
 .facility-meta i{color:#F2A93B;margin-right:8px}
 
-.status-pill{position:absolute;top:12px;right:12px;display:inline-block;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600}
 .status-pill--available{background:#28a745;color:#fff}
 .status-pill--pending{background:#ffc107;color:#16263D}
 .status-pill--booked{background:#6c757d;color:#fff}
@@ -1435,7 +1438,6 @@ ul{
 .data-table td{padding:12px;border-bottom:1px solid #2A415E;background:#16263D}
 .data-table tbody tr:hover{background:#1a3555}
 
-.status-pill{display:inline-block;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
 .status-pill--available{background:#28a745;color:#fff}
 .status-pill--pending{background:#ffc107;color:#16263D}
 .status-pill--booked{background:#6c757d;color:#fff}
@@ -1974,6 +1976,17 @@ ul{
     font-size:14px;
 }
 
+.form-error{
+    color:#E5484D;
+    font-size:14px;
+    margin:8px 0 0;
+    display:none;
+}
+
+.form-error.visible{
+    display:block;
+}
+
 
 .form-actions{
     margin-top:10px;
@@ -2039,7 +2052,8 @@ ul{
   color: #0284c7;
 }
 
-.notification-icon--equipment {
+.notification-icon--equipment,
+.notification-icon--loan {
   background-color: #d1fae5;
   color: #059669;
 }

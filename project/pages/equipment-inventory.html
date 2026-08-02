@@ -28,13 +28,13 @@
 
     <div class="topbar-right">
 
-        <button class="icon-btn">
+        <button class="icon-btn" id="notifBell">
             <i class="fa-regular fa-bell"></i>
         </button>
 
         <div class="topbar-profile">
             <img src="../assets/images/profile.jpg" class="topbar-avatar">
-            <span class="topbar-username">
+            <span class="topbar-username" id="topbarUsername">
                 Sports Officer
             </span>
         </div>
@@ -140,52 +140,7 @@ Add Equipment
 
 </thead>
 
-<tbody>
-
-<tr>
-<td>Basketballs</td>
-<td>Balls</td>
-<td>20</td>
-<td><span class="status-pill status-pill--available">In Stock</span></td>
-<td>
-<button class="btn btn--outline btn--sm">Edit</button>
-<button class="btn btn--outline-danger btn--sm">Delete</button>
-</td>
-</tr>
-
-<tr>
-<td>Footballs</td>
-<td>Balls</td>
-<td>15</td>
-<td><span class="status-pill status-pill--available">In Stock</span></td>
-<td>
-<button class="btn btn--outline btn--sm">Edit</button>
-<button class="btn btn--outline-danger btn--sm">Delete</button>
-</td>
-</tr>
-
-<tr>
-<td>Tennis Rackets</td>
-<td>Rackets</td>
-<td>4</td>
-<td><span class="status-pill status-pill--pending">Low Stock</span></td>
-<td>
-<button class="btn btn--outline btn--sm">Edit</button>
-<button class="btn btn--outline-danger btn--sm">Delete</button>
-</td>
-</tr>
-
-<tr>
-<td>Volleyballs</td>
-<td>Balls</td>
-<td>0</td>
-<td><span class="status-pill status-pill--booked">Out of Stock</span></td>
-<td>
-<button class="btn btn--outline btn--sm">Edit</button>
-<button class="btn btn--outline-danger btn--sm">Delete</button>
-</td>
-</tr>
-
+<tbody id="equipmentInventoryBody">
 </tbody>
 
 </table>
@@ -216,38 +171,31 @@ data-close-modal="equipmentModal">
 
 </div>
 
-<form class="modal-form">
+<form class="modal-form" id="equipmentForm">
 
 <label>
 Equipment Name
-<input type="text" placeholder="Basketballs" required>
+<input type="text" id="equipmentName" placeholder="Basketballs" required>
 </label>
 
 <label>
 Category
-<select>
-<option>Balls</option>
-<option>Jerseys</option>
-<option>Rackets</option>
-<option>Nets</option>
-<option>Cones</option>
-<option>Training Equipment</option>
+<select id="equipmentCategory">
+<option value="balls">Balls</option>
+<option value="jerseys">Jerseys</option>
+<option value="rackets">Rackets</option>
+<option value="nets">Nets</option>
+<option value="cones">Cones</option>
+<option value="training">Training Equipment</option>
 </select>
 </label>
 
 <label>
 Quantity
-<input type="number" placeholder="20" required>
+<input type="number" id="equipmentQuantity" placeholder="20" required>
 </label>
 
-<label>
-Status
-<select>
-<option>In Stock</option>
-<option>Low Stock</option>
-<option>Out of Stock</option>
-</select>
-</label>
+<p id="equipmentError" class="form-error"></p>
 
 <div class="modal-actions">
 
@@ -276,6 +224,7 @@ Save Equipment
 
 </div>
 
+<script src="../assets/js/api.js"></script>
 <script src="../assets/js/script.js"></script>
 <script src="../assets/js/officer.js"></script>
 <script src="../assets/js/auth.js"></script>
